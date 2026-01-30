@@ -9,6 +9,7 @@ import Events from './pages/Events';
 import Sermons from './pages/Sermons';
 import Gallery from './pages/Gallery';
 import Ministries from './pages/Ministries';
+import AdminLogin from './components/Adminlogin';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
             <Route path="/sermons" element={<Sermons />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/ministries" element={<Ministries />} />
-            
+            <Route path="/admin" element={<AdminLogin />} />
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Home />} />
           </Routes>
