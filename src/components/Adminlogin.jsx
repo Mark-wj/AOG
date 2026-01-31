@@ -200,16 +200,6 @@ const AdminLogin = () => {
               )}
             </motion.button>
           </form>
-
-          {/* Additional Info */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-400 text-sm">
-              Default credentials: <span className="text-gold-soft font-semibold">admin / admin123</span>
-            </p>
-            <p className="text-gray-500 text-xs mt-2">
-              For testing purposes only
-            </p>
-          </div>
         </div>
 
         {/* Back to Home */}

@@ -1,145 +1,134 @@
-import React, { useState } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  HomeIcon,
+  CalendarIcon,
+  MicrophoneIcon,
+  EnvelopeIcon,
+  PhotoIcon,
+  ArrowRightOnRectangleIcon,
+} from '@heroicons/react/24/outline';
 
 const AdminLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const menuItems = [
-    { name: 'Dashboard', path: '/admin', icon: '📊' },
-    { name: 'Events', path: '/admin/events', icon: '📅' },
-    { name: 'Sermons', path: '/admin/sermons', icon: '🎤' },
-    { name: 'Gallery', path: '/admin/gallery', icon: '🖼️' },
-    { name: 'Messages', path: '/admin/messages', icon: '✉️' },
-    { name: 'Settings', path: '/admin/settings', icon: '⚙️' },
-  ];
-
   const handleLogout = () => {
-    // Add logout logic here
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
     navigate('/admin/login');
   };
 
+  const navItems = [
+    { name: 'Dashboard', path: '/admin', icon: HomeIcon },
+    { name: 'Events', path: '/admin/events', icon: CalendarIcon },
+    { name: 'Sermons', path: '/admin/sermons', icon: MicrophoneIcon },
+    { name: 'Messages', path: '/admin/messages', icon: EnvelopeIcon },
+    { name: 'Gallery', path: '/admin/gallery', icon: PhotoIcon },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-midnight-950 via-royal-purple-950 to-midnight-950">
-      {/* Sidebar */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <motion.aside
-            className="fixed left-0 top-0 h-full w-72 glass-effect-strong border-r border-white/10 z-50 overflow-y-auto"
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* Logo */}
-            <div className="p-6 border-b border-white/10">
-              <Link to="/admin" className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">✝️</span>
-                </div>
-                <div>
-                  <h2 className="text-white font-bold text-lg">Admin Panel</h2>
-                  <p className="text-amber-400 text-sm">Church Management</p>
-                </div>
-              </Link>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-midnight-950 via-royal-purple-900 to-midnight-900 pattern-crosses-animated">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: Math.random() * 150 + 100,
+              height: Math.random() * 150 + 100,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              background: i % 2 === 0 
+                ? 'radial-gradient(circle, rgba(244, 208, 63, 0.08), transparent)' 
+                : 'radial-gradient(circle, rgba(139, 92, 246, 0.08), transparent)',
+              filter: 'blur(60px)',
+            }}
+            animate={{
+              y: [0, -40, 0],
+              x: [0, Math.random() * 40 - 20, 0],
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: Math.random() * 8 + 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
 
-            {/* Navigation */}
-            <nav className="p-4">
-              <ul className="space-y-2">
-                {menuItems.map((item) => {
-                  const isActive = location.pathname === item.path;
-                  return (
-                    <li key={item.path}>
-                      <Link
-                        to={item.path}
-                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                          isActive
-                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/30'
-                            : 'text-gray-300 hover:bg-white/5 hover:text-white'
-                        }`}
-                      >
-                        <span className="text-2xl">{item.icon}</span>
-                        <span className="font-medium">{item.name}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
+      {/* Decorative crosses */}
+      <div className="absolute top-10 left-10 text-gold-soft/5 text-6xl font-display pointer-events-none">✝</div>
+      <div className="absolute bottom-10 right-10 text-purple-500/5 text-6xl font-display pointer-events-none">✝</div>
 
-            {/* Admin Info */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 glass-effect">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold">GA</span>
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm">Gary Morgan</p>
-                  <p className="text-gray-400 text-xs">Administrator</p>
-                </div>
+      <div className="relative z-10 flex">
+        {/* Sidebar */}
+        <motion.div
+          initial={{ x: -300 }}
+          animate={{ x: 0 }}
+          className="w-72 min-h-screen glass-effect-divine border-r-2 border-gold-soft/10 p-6"
+        >
+          {/* Logo/Header */}
+          <div className="mb-8">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
+                <span className="text-white text-2xl font-bold">✝</span>
               </div>
-              <button
-                onClick={handleLogout}
-                className="w-full px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors duration-300 flex items-center justify-center space-x-2"
-              >
-                <span>🚪</span>
-                <span>Logout</span>
-              </button>
-            </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
-
-      {/* Main Content */}
-      <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-72' : 'ml-0'}`}>
-        {/* Top Bar */}
-        <header className="glass-effect-strong border-b border-white/10 sticky top-0 z-40">
-          <div className="flex items-center justify-between p-6">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center transition-colors duration-300"
-              >
-                <span className="text-2xl">{isSidebarOpen ? '◀' : '▶'}</span>
-              </button>
               <div>
-                <h1 className="text-2xl font-bold text-white font-display">
-                  {menuItems.find(item => item.path === location.pathname)?.name || 'Dashboard'}
-                </h1>
-                <p className="text-gray-400 text-sm">Armor of God Admin Portal</p>
+                <h2 className="text-white font-bold text-lg font-display">Admin Portal</h2>
+                <p className="text-gray-400 text-xs font-accent">Armor of God</p>
               </div>
             </div>
-
-            <div className="flex items-center space-x-4">
-              {/* Notifications */}
-              <button className="relative w-10 h-10 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center transition-colors duration-300">
-                <span className="text-xl">🔔</span>
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-                  3
-                </span>
-              </button>
-
-              {/* View Site */}
-              <Link
-                to="/"
-                target="_blank"
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-300 flex items-center space-x-2"
-              >
-                <span>🌐</span>
-                <span>View Site</span>
-              </Link>
-            </div>
+            <div className="ornamental-divider w-full mt-4"></div>
           </div>
-        </header>
 
-        {/* Page Content */}
-        <main className="p-6">
+          {/* Navigation */}
+          <nav className="space-y-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              
+              return (
+                <Link key={item.path} to={item.path}>
+                  <motion.div
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                      isActive
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/30'
+                        : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                    }`}
+                    whileHover={{ x: isActive ? 0 : 5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="font-semibold font-display">{item.name}</span>
+                  </motion.div>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Logout Button */}
+          <div className="mt-auto pt-8">
+            <motion.button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600/20 border-2 border-red-500/30 text-red-400 hover:bg-red-600/30 hover:border-red-500/50 rounded-xl transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <ArrowRightOnRectangleIcon className="w-5 h-5" />
+              <span className="font-semibold">Logout</span>
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-8 overflow-y-auto">
           <Outlet />
-        </main>
+        </div>
       </div>
     </div>
   );

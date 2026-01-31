@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { CalendarIcon, PlayIcon, UserGroupIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
 import HeroSection from '../components/HeroSection';
 import Section from '../components/Section';
 import Card from '../components/Card';
@@ -53,6 +54,39 @@ const Home = () => {
     }
   ];
 
+  const ministries = [
+    {
+      title: "Children's Ministry",
+      description: "Nurturing young hearts in faith through engaging activities and biblical teaching",
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      ),
+      path: "/ministries"
+    },
+    {
+      title: "Youth Group", 
+      description: "Empowering the next generation to live boldly for Christ",
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+      path: "/ministries"
+    },
+    {
+      title: "Outreach",
+      description: "Serving our community and sharing God's love through action",
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      path: "/ministries"
+    }
+  ];
+
   return (
     <div className="bg-celestial">
       <HeroSection />
@@ -61,7 +95,7 @@ const Home = () => {
       <Section 
         title="Who We Are" 
         subtitle="A community of believers walking in faith and love"
-        className="animated-gradient pattern-dots"
+        className="animated-gradient pattern-crosses-ornate"
       >
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div
@@ -73,7 +107,7 @@ const Home = () => {
           >
             <div className="absolute -inset-4 bg-gradient-to-br from-amber-400/20 to-purple-600/20 rounded-3xl blur-2xl"></div>
             <img 
-              src="https://images.unsplash.com/photo-1563902341721-029085ad9347?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src="https://images.unsplash.com/photo-1563902341721-029085ad9347?q=80&w=1170&auto=format&fit=crop"
               alt="Church Community"
               className="relative rounded-3xl shadow-2xl border-4 border-white/10"
             />
@@ -124,7 +158,7 @@ const Home = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Learn More About Us →
+                  Learn More About Us
                 </motion.button>
               </Link>
             </div>
@@ -133,7 +167,7 @@ const Home = () => {
       </Section>
 
       {/* Meet Our Pastor Section */}
-      <div className="bg-gradient-to-br from-midnight-900 via-royal-purple-900 to-midnight-900 pattern-grid">
+      <div className="bg-gradient-to-br from-midnight-900 via-royal-purple-900 to-midnight-900 pattern-crosses-large">
         <MeetOurPastor />
       </div>
 
@@ -141,7 +175,7 @@ const Home = () => {
       <Section 
         title="Upcoming Events" 
         subtitle="Join us in fellowship and worship" 
-        className="animated-gradient pattern-diagonal"
+        className="animated-gradient pattern-crosses"
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((event, index) => (
@@ -167,12 +201,12 @@ const Home = () => {
                     {event.title}
                   </h3>
                   <p className="text-amber-400 mb-4 font-semibold flex items-center">
-                    <span className="mr-2">📅</span>
+                    <CalendarIcon className="w-5 h-5 mr-2" />
                     {event.date}
                   </p>
                   <Link to={event.path}>
                     <button className="btn-outline w-full">
-                      Learn More →
+                      Learn More
                     </button>
                   </Link>
                 </div>
@@ -190,7 +224,7 @@ const Home = () => {
         >
           <Link to="/events">
             <button className="btn-primary text-lg px-10 py-5">
-              View All Events →
+              View All Events
             </button>
           </Link>
         </motion.div>
@@ -200,7 +234,7 @@ const Home = () => {
       <Section 
         title="Latest Sermons" 
         subtitle="Messages to inspire and guide your spiritual journey"
-        className="bg-gradient-to-br from-royal-purple-900 via-midnight-900 to-royal-purple-950 pattern-circuit"
+        className="bg-gradient-to-br from-royal-purple-900 via-midnight-900 to-royal-purple-950 pattern-crosses-ornate"
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {sermons.map((sermon, index) => (
@@ -223,7 +257,7 @@ const Home = () => {
                   {/* Play button overlay */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-2xl text-gray-900">▶</span>
+                      <PlayIcon className="w-8 h-8 text-gray-900 ml-1" />
                     </div>
                   </div>
                 </div>
@@ -236,7 +270,7 @@ const Home = () => {
                 
                 <Link to={sermon.path} className="block">
                   <button className="btn-outline w-full text-sm py-2">
-                    Watch Sermon →
+                    Watch Sermon
                   </button>
                 </Link>
               </Card>
@@ -253,7 +287,7 @@ const Home = () => {
         >
           <Link to="/sermons">
             <button className="btn-primary text-lg px-10 py-5">
-              Browse All Sermons →
+              Browse All Sermons
             </button>
           </Link>
         </motion.div>
@@ -263,29 +297,10 @@ const Home = () => {
       <Section 
         title="Our Ministries" 
         subtitle="Find your place to serve and grow" 
-        className="animated-gradient pattern-dots"
+        className="animated-gradient pattern-crosses"
       >
         <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              title: "Children's Ministry",
-              description: "Nurturing young hearts in faith through engaging activities and biblical teaching",
-              icon: "👶",
-              path: "/ministries"
-            },
-            {
-              title: "Youth Group", 
-              description: "Empowering the next generation to live boldly for Christ",
-              icon: "🌟",
-              path: "/ministries"
-            },
-            {
-              title: "Outreach",
-              description: "Serving our community and sharing God's love through action",
-              icon: "🌍",
-              path: "/ministries"
-            }
-          ].map((ministry, index) => (
+          {ministries.map((ministry, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
@@ -298,11 +313,11 @@ const Home = () => {
                 
                 <div className="relative">
                   <motion.div 
-                    className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center shadow-lg shadow-purple-500/30"
+                    className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center shadow-lg shadow-purple-500/30 text-white"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <span className="text-5xl">{ministry.icon}</span>
+                    {ministry.icon}
                   </motion.div>
                   
                   <h3 className="text-2xl font-bold text-white mb-4 font-display group-hover:text-amber-400 transition-colors">
@@ -314,7 +329,7 @@ const Home = () => {
                   
                   <Link to={ministry.path}>
                     <button className="btn-outline">
-                      Learn More →
+                      Learn More
                     </button>
                   </Link>
                 </div>
@@ -332,7 +347,7 @@ const Home = () => {
         >
           <Link to="/ministries">
             <button className="btn-primary text-lg px-10 py-5">
-              Explore All Ministries →
+              Explore All Ministries
             </button>
           </Link>
         </motion.div>
@@ -342,7 +357,7 @@ const Home = () => {
       <Section 
         title="Heavenly Gallery" 
         subtitle="Capturing moments of faith and fellowship"
-        className="bg-gradient-to-br from-midnight-900 via-royal-purple-900 to-midnight-900 pattern-grid"
+        className="bg-gradient-to-br from-midnight-900 via-royal-purple-900 to-midnight-900 pattern-crosses-large"
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
@@ -384,7 +399,7 @@ const Home = () => {
         >
           <Link to="/gallery">
             <button className="btn-primary text-lg px-10 py-5">
-              View Full Gallery →
+              View Full Gallery
             </button>
           </Link>
         </motion.div>

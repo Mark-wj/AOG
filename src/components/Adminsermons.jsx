@@ -1,42 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  CalendarIcon,
+  MicrophoneIcon,
   PlusIcon,
   PencilIcon,
   TrashIcon,
   XMarkIcon,
-  MapPinIcon,
-  ClockIcon,
+  PlayIcon,
+  EyeIcon,
   PhotoIcon,
+  VideoCameraIcon,
+  MusicalNoteIcon,
 } from '@heroicons/react/24/outline';
 
-const AdminEvents = () => {
-  const [events, setEvents] = useState([]);
+const AdminSermons = () => {
+  const [sermons, setSermons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingEvent, setEditingEvent] = useState(null);
+  const [editingSermon, setEditingSermon] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
+    speaker: '',
     date: '',
-    time: '',
-    location: '',
+    series: '',
     description: '',
     image: '',
-    category: 'upcoming'
+    videoUrl: '',
+    audioUrl: ''
   });
 
   useEffect(() => {
-    fetchEvents();
+    fetchSermons();
   }, []);
 
-  const fetchEvents = async () => {
+  const fetchSermons = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/events');
+      const response = await fetch('http://localhost:5000/api/sermons');
       const data = await response.json();
-      setEvents(data);
+      setSermons(data);
     } catch (error) {
-      console.error('Error fetching events:', error);
+      console.error('Error fetching sermons:', error);
     } finally {
       setLoading(false);
     }
@@ -54,11 +57,11 @@ const AdminEvents = () => {
     
     try {
       const token = localStorage.getItem('adminToken');
-      const url = editingEvent 
-        ? `http://localhost:5000/api/events/${editingEvent._id}`
-        : 'http://localhost:5000/api/events';
+      const url = editingSermon 
+        ? `http://localhost:5000/api/sermons/${editingSermon._id}`
+        : 'http://localhost:5000/api/sermons';
       
-      const method = editingEvent ? 'PUT' : 'POST';
+      const method = editingSermon ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
@@ -70,20 +73,20 @@ const AdminEvents = () => {
       });
 
       if (response.ok) {
-        fetchEvents();
+        fetchSermons();
         closeModal();
       }
     } catch (error) {
-      console.error('Error saving event:', error);
+      console.error('Error saving sermon:', error);
     }
   };
 
-  const handleDelete = async (eventId) => {
-    if (!window.confirm('Are you sure you want to delete this event?')) return;
+  const handleDelete = async (sermonId) => {
+    if (!window.confirm('Are you sure you want to delete this sermon?')) return;
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/events/${eventId}`, {
+      const response = await fetch(`http://localhost:5000/api/sermons/${sermonId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -91,35 +94,37 @@ const AdminEvents = () => {
       });
 
       if (response.ok) {
-        fetchEvents();
+        fetchSermons();
       }
     } catch (error) {
-      console.error('Error deleting event:', error);
+      console.error('Error deleting sermon:', error);
     }
   };
 
-  const openModal = (event = null) => {
-    if (event) {
-      setEditingEvent(event);
+  const openModal = (sermon = null) => {
+    if (sermon) {
+      setEditingSermon(sermon);
       setFormData({
-        title: event.title,
-        date: event.date,
-        time: event.time,
-        location: event.location,
-        description: event.description,
-        image: event.image,
-        category: event.category || 'upcoming'
+        title: sermon.title,
+        speaker: sermon.speaker,
+        date: sermon.date,
+        series: sermon.series || '',
+        description: sermon.description,
+        image: sermon.image,
+        videoUrl: sermon.videoUrl || '',
+        audioUrl: sermon.audioUrl || ''
       });
     } else {
-      setEditingEvent(null);
+      setEditingSermon(null);
       setFormData({
         title: '',
+        speaker: 'Pastor Gary Morgan',
         date: '',
-        time: '',
-        location: '',
+        series: '',
         description: '',
         image: '',
-        category: 'upcoming'
+        videoUrl: '',
+        audioUrl: ''
       });
     }
     setShowModal(true);
@@ -127,13 +132,13 @@ const AdminEvents = () => {
 
   const closeModal = () => {
     setShowModal(false);
-    setEditingEvent(null);
+    setEditingSermon(null);
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-white text-xl">Loading events...</div>
+        <div className="text-white text-xl">Loading sermons...</div>
       </div>
     );
   }
@@ -144,10 +149,10 @@ const AdminEvents = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white font-display flex items-center">
-            <CalendarIcon className="w-10 h-10 text-amber-400 mr-3" />
-            Events Management
+            <MicrophoneIcon className="w-10 h-10 text-amber-400 mr-3" />
+            Sermons Management
           </h1>
-          <p className="text-gray-300 mt-2 font-accent">Manage church events and activities</p>
+          <p className="text-gray-300 mt-2 font-accent">Manage sermon library and messages</p>
         </div>
         <motion.button
           onClick={() => openModal()}
@@ -156,66 +161,84 @@ const AdminEvents = () => {
           whileTap={{ scale: 0.95 }}
         >
           <PlusIcon className="w-5 h-5" />
-          <span>Add New Event</span>
+          <span>Add New Sermon</span>
         </motion.button>
       </div>
 
-      {/* Events Grid */}
+      {/* Sermons Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events.map((event, index) => (
+        {sermons.map((sermon, index) => (
           <motion.div
-            key={event._id}
+            key={sermon._id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="glass-effect-strong rounded-2xl overflow-hidden border border-white/10 group hover:border-amber-400/30 transition-all duration-300"
+            className="glass-effect-strong rounded-2xl overflow-hidden border border-white/10 group hover:border-purple-400/30 transition-all duration-300"
           >
-            {/* Event Image */}
+            {/* Sermon Image */}
             <div className="relative h-48 overflow-hidden">
               <img
-                src={event.image}
-                alt={event.title}
+                src={sermon.image}
+                alt={sermon.title}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"></div>
               
-              {/* Category Badge */}
-              <div className="absolute top-4 right-4">
-                <span className="px-3 py-1 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
-                  {event.category}
-                </span>
+              {/* Play Button Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center">
+                  <PlayIcon className="w-8 h-8 text-white ml-1" />
+                </div>
+              </div>
+
+              {/* Views Badge */}
+              <div className="absolute top-4 right-4 flex items-center space-x-1 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                <EyeIcon className="w-4 h-4 text-white" />
+                <span className="text-white text-xs font-semibold">{sermon.views || 0}</span>
               </div>
             </div>
 
-            {/* Event Info */}
+            {/* Sermon Info */}
             <div className="p-6">
-              <h3 className="text-xl font-bold text-white mb-3 font-display group-hover:text-amber-400 transition-colors">
-                {event.title}
+              <h3 className="text-xl font-bold text-white mb-2 font-display group-hover:text-purple-400 transition-colors line-clamp-2">
+                {sermon.title}
               </h3>
               
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center text-gray-300 text-sm">
-                  <CalendarIcon className="w-4 h-4 mr-2 text-amber-400" />
-                  {event.date}
+              <p className="text-gray-300 text-sm mb-2">{sermon.speaker}</p>
+              <p className="text-amber-400 text-sm font-semibold mb-3">{sermon.date}</p>
+
+              {sermon.series && (
+                <div className="mb-3">
+                  <span className="px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs rounded-full">
+                    {sermon.series}
+                  </span>
                 </div>
-                <div className="flex items-center text-gray-300 text-sm">
-                  <ClockIcon className="w-4 h-4 mr-2 text-amber-400" />
-                  {event.time}
-                </div>
-                <div className="flex items-center text-gray-300 text-sm">
-                  <MapPinIcon className="w-4 h-4 mr-2 text-amber-400" />
-                  {event.location}
-                </div>
-              </div>
+              )}
 
               <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                {event.description}
+                {sermon.description}
               </p>
+
+              {/* Media Indicators */}
+              <div className="flex items-center space-x-3 mb-4">
+                {sermon.videoUrl && (
+                  <div className="flex items-center text-purple-400 text-xs">
+                    <VideoCameraIcon className="w-4 h-4 mr-1" />
+                    Video
+                  </div>
+                )}
+                {sermon.audioUrl && (
+                  <div className="flex items-center text-amber-400 text-xs">
+                    <MusicalNoteIcon className="w-4 h-4 mr-1" />
+                    Audio
+                  </div>
+                )}
+              </div>
 
               {/* Action Buttons */}
               <div className="flex space-x-2">
                 <motion.button
-                  onClick={() => openModal(event)}
+                  onClick={() => openModal(sermon)}
                   className="flex-1 btn-outline text-sm py-2 flex items-center justify-center space-x-1"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -224,7 +247,7 @@ const AdminEvents = () => {
                   <span>Edit</span>
                 </motion.button>
                 <motion.button
-                  onClick={() => handleDelete(event._id)}
+                  onClick={() => handleDelete(sermon._id)}
                   className="flex-1 bg-red-600/20 border-2 border-red-500/30 text-red-400 hover:bg-red-600/30 hover:border-red-500/50 rounded-xl text-sm py-2 flex items-center justify-center space-x-1 transition-all duration-300"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -239,20 +262,20 @@ const AdminEvents = () => {
       </div>
 
       {/* Empty State */}
-      {events.length === 0 && (
+      {sermons.length === 0 && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="glass-effect-strong rounded-2xl p-12 text-center border border-white/10"
         >
-          <CalendarIcon className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-2 font-display">No Events Yet</h3>
-          <p className="text-gray-400 mb-6">Create your first event to get started</p>
+          <MicrophoneIcon className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-white mb-2 font-display">No Sermons Yet</h3>
+          <p className="text-gray-400 mb-6">Upload your first sermon to get started</p>
           <button
             onClick={() => openModal()}
             className="btn-primary"
           >
-            Create Event
+            Upload Sermon
           </button>
         </motion.div>
       )}
@@ -277,7 +300,7 @@ const AdminEvents = () => {
               {/* Modal Header */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-3xl font-bold text-white font-display">
-                  {editingEvent ? 'Edit Event' : 'Create New Event'}
+                  {editingSermon ? 'Edit Sermon' : 'Upload New Sermon'}
                 </h2>
                 <button
                   onClick={closeModal}
@@ -292,87 +315,70 @@ const AdminEvents = () => {
                 {/* Title */}
                 <div>
                   <label className="block text-gray-300 font-semibold mb-2 font-display">
-                    Event Title
+                    Sermon Title
                   </label>
                   <input
                     type="text"
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-all duration-300"
-                    placeholder="Sunday Worship Service"
+                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300"
+                    placeholder="The Power of Faith"
                     required
                   />
                 </div>
 
-                {/* Date and Time */}
+                {/* Speaker and Date */}
                 <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-300 font-semibold mb-2 font-display">
+                      Speaker
+                    </label>
+                    <input
+                      type="text"
+                      name="speaker"
+                      value={formData.speaker}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300"
+                      placeholder="Pastor Gary Morgan"
+                      required
+                    />
+                  </div>
                   <div>
                     <label className="block text-gray-300 font-semibold mb-2 font-display">
                       Date
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       name="date"
                       value={formData.date}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400 transition-all duration-300"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-300 font-semibold mb-2 font-display">
-                      Time
-                    </label>
-                    <input
-                      type="text"
-                      name="time"
-                      value={formData.time}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-all duration-300"
-                      placeholder="10:00 AM"
+                      className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300"
+                      placeholder="Nov 12, 2024"
                       required
                     />
                   </div>
                 </div>
 
-                {/* Location */}
+                {/* Series */}
                 <div>
                   <label className="block text-gray-300 font-semibold mb-2 font-display">
-                    Location
+                    Series (Optional)
                   </label>
                   <input
                     type="text"
-                    name="location"
-                    value={formData.location}
+                    name="series"
+                    value={formData.series}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-all duration-300"
-                    placeholder="Main Sanctuary"
-                    required
+                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300"
+                    placeholder="Faith Series"
                   />
-                </div>
-
-                {/* Category */}
-                <div>
-                  <label className="block text-gray-300 font-semibold mb-2 font-display">
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400 transition-all duration-300"
-                  >
-                    <option value="upcoming">Upcoming</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="special">Special Event</option>
-                  </select>
                 </div>
 
                 {/* Image URL */}
                 <div>
                   <label className="block text-gray-300 font-semibold mb-2 font-display">
-                    Image URL
+                    Thumbnail Image URL
                   </label>
                   <div className="flex space-x-2">
                     <input
@@ -380,7 +386,7 @@ const AdminEvents = () => {
                       name="image"
                       value={formData.image}
                       onChange={handleInputChange}
-                      className="flex-1 px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-all duration-300"
+                      className="flex-1 px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300"
                       placeholder="https://example.com/image.jpg"
                       required
                     />
@@ -393,6 +399,36 @@ const AdminEvents = () => {
                   </div>
                 </div>
 
+                {/* Video URL */}
+                <div>
+                  <label className="block text-gray-300 font-semibold mb-2 font-display">
+                    Video URL (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    name="videoUrl"
+                    value={formData.videoUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300"
+                    placeholder="https://youtube.com/watch?v=..."
+                  />
+                </div>
+
+                {/* Audio URL */}
+                <div>
+                  <label className="block text-gray-300 font-semibold mb-2 font-display">
+                    Audio URL (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    name="audioUrl"
+                    value={formData.audioUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300"
+                    placeholder="https://example.com/sermon.mp3"
+                  />
+                </div>
+
                 {/* Description */}
                 <div>
                   <label className="block text-gray-300 font-semibold mb-2 font-display">
@@ -403,8 +439,8 @@ const AdminEvents = () => {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows="4"
-                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-all duration-300 resize-none"
-                    placeholder="Event description..."
+                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition-all duration-300 resize-none"
+                    placeholder="Sermon description..."
                     required
                   />
                 </div>
@@ -420,9 +456,9 @@ const AdminEvents = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 btn-primary"
+                    className="flex-1 btn-primary bg-gradient-to-r from-purple-600 to-purple-700"
                   >
-                    {editingEvent ? 'Update Event' : 'Create Event'}
+                    {editingSermon ? 'Update Sermon' : 'Upload Sermon'}
                   </button>
                 </div>
               </form>
@@ -434,4 +470,4 @@ const AdminEvents = () => {
   );
 };
 
-export default AdminEvents;
+export default AdminSermons;

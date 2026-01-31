@@ -19,15 +19,15 @@ const MinistryCard = ({ ministry }) => {
         <span className="text-2xl text-white">{ministry.icon}</span>
       </div>
       
-      <h3 className="text-xl font-bold text-white mb-3">{ministry.title}</h3>
-      <p className="text-gray-300 mb-4">{ministry.description}</p>
+      <h3 className="text-xl font-bold text-black mb-3">{ministry.title}</h3>
+      <p className="text-gray-500 mb-4">{ministry.description}</p>
       
-      <div className="text-gold-soft font-semibold">
+      <div className="text-royal-purple-300 font-semibold">
         <p>{ministry.schedule}</p>
         <p className="text-sm mt-2">{ministry.leader}</p>
       </div>
       
-      <button className="mt-4 px-6 py-2 border border-gold-soft text-gold-soft rounded-lg hover:bg-gold-soft hover:text-white transition-all duration-300">
+      <button className="mt-4 px-6 py-2 border border-gold-soft text-gray-400 rounded-lg hover:bg-gold-soft hover:text-white transition-all duration-300">
         Learn More
       </button>
     </motion.div>
