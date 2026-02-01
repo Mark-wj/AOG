@@ -10,6 +10,7 @@ import {
   ClockIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline';
+import { eventsAPI } from '../api';  // Use the API wrapper
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
@@ -32,8 +33,7 @@ const AdminEvents = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/events');
-      const data = await response.json();
+      const data = await eventsAPI.getAll();
       setEvents(data);
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -53,28 +53,17 @@ const AdminEvents = () => {
     e.preventDefault();
     
     try {
-      const token = localStorage.getItem('adminToken');
-      const url = editingEvent 
-        ? `http://localhost:5000/api/events/${editingEvent._id}`
-        : 'http://localhost:5000/api/events';
-      
-      const method = editingEvent ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        fetchEvents();
-        closeModal();
+      if (editingEvent) {
+        await eventsAPI.update(editingEvent._id, formData);
+      } else {
+        await eventsAPI.create(formData);
       }
+      
+      fetchEvents();
+      closeModal();
     } catch (error) {
       console.error('Error saving event:', error);
+      alert('Failed to save event. Please try again.');
     }
   };
 
@@ -82,19 +71,11 @@ const AdminEvents = () => {
     if (!window.confirm('Are you sure you want to delete this event?')) return;
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/events/${eventId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        fetchEvents();
-      }
+      await eventsAPI.delete(eventId);
+      fetchEvents();
     } catch (error) {
       console.error('Error deleting event:', error);
+      alert('Failed to delete event. Please try again.');
     }
   };
 

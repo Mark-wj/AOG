@@ -44,10 +44,11 @@ const BackgroundMusic = () => {
   const fetchMusicUrl = async () => {
     try {
       setIsLoading(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      // Remove trailing slash to prevent double slashes
+      const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
       
-      console.log('Fetching music settings from:', `${apiUrl}/settings/music`);
-      const response = await fetch(`${apiUrl}/settings/music`);
+      console.log('Fetching music settings from:', `${apiUrl}/api/settings/music`);
+      const response = await fetch(`${apiUrl}/api/settings/music`);
       
       if (response.ok) {
         const data = await response.json();
@@ -76,7 +77,7 @@ const BackgroundMusic = () => {
           }
           
           // Check if music is enabled
-          const settingsResponse = await fetch(`${apiUrl}/settings`);
+          const settingsResponse = await fetch(`${apiUrl}/api/settings`);
           if (settingsResponse.ok) {
             const settingsData = await settingsResponse.json();
             console.log('Full settings response:', settingsData);
