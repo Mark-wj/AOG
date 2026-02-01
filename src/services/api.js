@@ -1,18 +1,16 @@
-// src/services/api.js - API Service for Flask Backend
 import axios from 'axios';
 
-// Base API URL - Change this based on environment
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Remove trailing slash if present to prevent double slashes
+const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 
-// Create axios instance
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor to add token
+// Request interceptor - add auth token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('adminToken');
@@ -26,16 +24,13 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle errors
+// Response interceptor - handle 401 errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Unauthorized - clear token and redirect to login
       localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      if (window.location.pathname.startsWith('/admin') && 
-          window.location.pathname !== '/admin/login') {
+      if (window.location.pathname.startsWith('/admin')) {
         window.location.href = '/admin/login';
       }
     }
@@ -43,153 +38,72 @@ api.interceptors.response.use(
   }
 );
 
-// ==================== AUTHENTICATION ====================
-
-export const authAPI = {
-  login: async (credentials) => {
-    const response = await api.post('/admin/login', credentials);
-    return response.data;
-  },
-  
-  register: async (userData) => {
-    const response = await api.post('/admin/register', userData);
-    return response.data;
-  },
+// ==================== SETTINGS API ====================
+export const settingsAPI = {
+  getAll: () => api.get('/api/settings').then(res => res.data),
+  getMusic: () => api.get('/api/settings/music').then(res => res.data),
+  update: (data) => api.put('/api/settings', data).then(res => res.data),
 };
 
-// ==================== EVENTS ====================
-
+// ==================== EVENTS API ====================
 export const eventsAPI = {
-  getAll: async (category) => {
-    const url = category ? `/events?category=${category}` : '/events';
-    const response = await api.get(url);
-    return response.data;
+  getAll: (category) => {
+    const params = category ? { category } : {};
+    return api.get('/api/events', { params }).then(res => res.data);
   },
-  
-  getById: async (id) => {
-    const response = await api.get(`/events/${id}`);
-    return response.data;
-  },
-  
-  create: async (eventData) => {
-    const response = await api.post('/events', eventData);
-    return response.data;
-  },
-  
-  update: async (id, eventData) => {
-    const response = await api.put(`/events/${id}`, eventData);
-    return response.data;
-  },
-  
-  delete: async (id) => {
-    const response = await api.delete(`/events/${id}`);
-    return response.data;
-  },
+  getById: (id) => api.get(`/api/events/${id}`).then(res => res.data),
+  create: (data) => api.post('/api/events', data).then(res => res.data),
+  update: (id, data) => api.put(`/api/events/${id}`, data).then(res => res.data),
+  delete: (id) => api.delete(`/api/events/${id}`).then(res => res.data),
 };
 
-// ==================== SERMONS ====================
-
+// ==================== SERMONS API ====================
 export const sermonsAPI = {
-  getAll: async () => {
-    const response = await api.get('/sermons');
-    return response.data;
-  },
-  
-  getById: async (id) => {
-    const response = await api.get(`/sermons/${id}`);
-    return response.data;
-  },
-  
-  create: async (sermonData) => {
-    const response = await api.post('/sermons', sermonData);
-    return response.data;
-  },
-  
-  update: async (id, sermonData) => {
-    const response = await api.put(`/sermons/${id}`, sermonData);
-    return response.data;
-  },
-  
-  delete: async (id) => {
-    const response = await api.delete(`/sermons/${id}`);
-    return response.data;
-  },
+  getAll: () => api.get('/api/sermons').then(res => res.data),
+  getById: (id) => api.get(`/api/sermons/${id}`).then(res => res.data),
+  create: (data) => api.post('/api/sermons', data).then(res => res.data),
+  update: (id, data) => api.put(`/api/sermons/${id}`, data).then(res => res.data),
+  delete: (id) => api.delete(`/api/sermons/${id}`).then(res => res.data),
 };
 
-// ==================== GALLERY ====================
-
+// ==================== GALLERY API ====================
 export const galleryAPI = {
-  getAll: async (category) => {
-    const url = category ? `/gallery?category=${category}` : '/gallery';
-    const response = await api.get(url);
-    return response.data;
+  getAll: (category) => {
+    const params = category ? { category } : {};
+    return api.get('/api/gallery', { params }).then(res => res.data);
   },
-  
-  create: async (imageData) => {
-    const response = await api.post('/gallery', imageData);
-    return response.data;
-  },
-  
-  delete: async (id) => {
-    const response = await api.delete(`/gallery/${id}`);
-    return response.data;
-  },
+  create: (data) => api.post('/api/gallery', data).then(res => res.data),
+  delete: (id) => api.delete(`/api/gallery/${id}`).then(res => res.data),
 };
 
-// ==================== MESSAGES ====================
-
+// ==================== MESSAGES API ====================
 export const messagesAPI = {
-  submit: async (messageData) => {
-    const response = await api.post('/messages', messageData);
-    return response.data;
-  },
-  
-  getAll: async () => {
-    const response = await api.get('/messages');
-    return response.data;
-  },
-  
-  updateStatus: async (id, status) => {
-    const response = await api.patch(`/messages/${id}`, { status });
-    return response.data;
-  },
-  
-  delete: async (id) => {
-    const response = await api.delete(`/messages/${id}`);
-    return response.data;
-  },
+  submit: (data) => api.post('/api/messages', data).then(res => res.data),
+  getAll: () => api.get('/api/messages').then(res => res.data),
+  updateStatus: (id, status) => api.patch(`/api/messages/${id}`, { status }).then(res => res.data),
+  delete: (id) => api.delete(`/api/messages/${id}`).then(res => res.data),
 };
 
-// ==================== NEWSLETTER ====================
-
+// ==================== NEWSLETTER API ====================
 export const newsletterAPI = {
-  subscribe: async (email) => {
-    const response = await api.post('/subscribe', { email });
-    return response.data;
-  },
-  
-  getSubscribers: async () => {
-    const response = await api.get('/subscribers');
-    return response.data;
-  },
+  subscribe: (email) => api.post('/api/subscribe', { email }).then(res => res.data),
+  getSubscribers: () => api.get('/api/subscribers').then(res => res.data),
 };
 
-// ==================== ADMIN STATS ====================
+// ==================== AUTH API ====================
+export const authAPI = {
+  login: (credentials) => api.post('/api/admin/login', credentials).then(res => res.data),
+  register: (data) => api.post('/api/admin/register', data).then(res => res.data),
+};
 
+// ==================== ADMIN API ====================
 export const adminAPI = {
-  getStats: async () => {
-    const response = await api.get('/admin/stats');
-    return response.data;
-  },
+  getStats: () => api.get('/api/admin/stats').then(res => res.data),
 };
 
-// ==================== HEALTH CHECK ====================
-
+// ==================== HEALTH API ====================
 export const healthAPI = {
-  check: async () => {
-    const response = await api.get('/health');
-    return response.data;
-  },
+  check: () => api.get('/api/health').then(res => res.data),
 };
 
 export default api;
