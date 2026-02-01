@@ -90,7 +90,7 @@ const AdminSettings = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/settings`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://aog-backend-production.up.railway.app//api'}/settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

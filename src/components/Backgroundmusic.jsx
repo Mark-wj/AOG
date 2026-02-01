@@ -45,7 +45,7 @@ const BackgroundMusic = () => {
     try {
       setIsLoading(true);
       // Remove trailing slash to prevent double slashes
-      const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+      const apiUrl = (import.meta.env.VITE_API_URL || 'https://aog-backend-production.up.railway.app/').replace(/\/$/, '');
       
       console.log('Fetching music settings from:', `${apiUrl}/api/settings/music`);
       const response = await fetch(`${apiUrl}/api/settings/music`);

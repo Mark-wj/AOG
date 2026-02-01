@@ -35,7 +35,7 @@ const AdminSermons = () => {
 
   const fetchSermons = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/sermons');
+      const response = await fetch('https://aog-backend-production.up.railway.app/api/sermons');
       const data = await response.json();
       setSermons(data);
     } catch (error) {
@@ -58,8 +58,8 @@ const AdminSermons = () => {
     try {
       const token = localStorage.getItem('adminToken');
       const url = editingSermon 
-        ? `http://localhost:5000/api/sermons/${editingSermon._id}`
-        : 'http://localhost:5000/api/sermons';
+        ? `https://aog-backend-production.up.railway.app/api/sermons/${editingSermon._id}`
+        : 'https://aog-backend-production.up.railway.app/api/sermons';
       
       const method = editingSermon ? 'PUT' : 'POST';
 
@@ -86,7 +86,7 @@ const AdminSermons = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/sermons/${sermonId}`, {
+      const response = await fetch(`https://aog-backend-production.up.railway.app/api/sermons/${sermonId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

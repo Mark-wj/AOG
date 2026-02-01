@@ -23,7 +23,7 @@ const AdminMessages = () => {
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/messages', {
+      const response = await fetch('https://aog-backend-production.up.railway.app/api/messages', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -40,7 +40,7 @@ const AdminMessages = () => {
   const updateMessageStatus = async (messageId, status) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/messages/${messageId}`, {
+      const response = await fetch(`https://aog-backend-production.up.railway.app/api/messages/${messageId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const AdminMessages = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/messages/${messageId}`, {
+      const response = await fetch(`https://aog-backend-production.up.railway.app/api/messages/${messageId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

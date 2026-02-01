@@ -18,14 +18,8 @@ const About = () => {
     {
       name: "Pastor Gary Morgan",
       role: "Senior Pastor",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      image: "../../public/1000392101.jpg",
       bio: "Leading with compassion and wisdom for over 20 years, arming believers with the Word of God."
-    },
-    {
-      name: "Minister Sarah Williams",
-      role: "Worship Director",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      bio: "Bringing heavenly music to our worship services and leading praise teams."
     }
   ];
 
@@ -157,7 +151,7 @@ const About = () => {
           >
             <div className="absolute -inset-4 bg-gradient-to-br from-purple-600/20 to-amber-400/20 rounded-3xl blur-2xl"></div>
             <img 
-              src="https://images.unsplash.com/photo-1519070994522-88c6b756330e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+              src="https://i.swncdn.com/media/1280w/via/11361-istockgetty-images-plusrawpixel-2.jpg"
               alt="Church Community"
               className="relative rounded-3xl shadow-2xl border-4 border-white/10 w-full"
             />

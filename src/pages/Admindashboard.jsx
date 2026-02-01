@@ -46,7 +46,7 @@ const AdminDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/stats');
+      const response = await fetch('https://aog-backend-production.up.railway.app/api/admin/stats');
       const data = await response.json();
       setStats(data);
     } catch (error) {

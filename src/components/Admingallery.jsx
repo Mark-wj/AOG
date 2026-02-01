@@ -27,7 +27,7 @@ const AdminGallery = () => {
 
   const fetchImages = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/gallery');
+      const response = await fetch('https://aog-backend-production.up.railway.app/api/gallery');
       const data = await response.json();
       setImages(data);
     } catch (error) {
@@ -49,7 +49,7 @@ const AdminGallery = () => {
     
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/gallery', {
+      const response = await fetch('https://aog-backend-production.up.railway.app/api/gallery', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const AdminGallery = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/gallery/${imageId}`, {
+      const response = await fetch(`https://aog-backend-production.up.railway.app/api/gallery/${imageId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
