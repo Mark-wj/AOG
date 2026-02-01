@@ -19,42 +19,46 @@ import AdminMessages from './components/Adminmessages';
 import AdminGallery from './components/Admingallery';
 import AdminSettings from './components/Adminsettings';
 
+// Public Layout Wrapper
+const PublicLayout = ({ children }) => (
+  <div className="App bg-gradient-to-br from-midnight-950 via-royal-purple-900 to-midnight-900 min-h-screen">
+    <Navbar />
+    <BackgroundMusic />
+    <main>
+      {children}
+    </main>
+    <Footer />
+  </div>
+);
+
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes with Navbar, Footer, and Background Music */}
-        <Route path="/*" element={
-          <div className="App bg-gradient-to-br from-midnight-950 via-royal-purple-900 to-midnight-900 min-h-screen">
-            <Navbar />
-            <BackgroundMusic />
-            <main>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/events" element={<Events />} />
-                <Route path="/sermons" element={<Sermons />} />
-                <Route path="/gallery" element={<Gallery />} />
-                <Route path="/ministries" element={<Ministries />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        } />
-
+        {/* ⚠️ IMPORTANT: Admin routes MUST come BEFORE public routes to prevent path matching issues */}
+        
         {/* Admin Login (No Layout) */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* Admin Routes with AdminLayout */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="events" element={<AdminEvents />} />
           <Route path="sermons" element={<AdminSermons />} />
           <Route path="messages" element={<AdminMessages />} />
           <Route path="gallery" element={<AdminGallery />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
+
+        {/* Public Routes with PublicLayout */}
+        <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+        <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/events" element={<PublicLayout><Events /></PublicLayout>} />
+        <Route path="/sermons" element={<PublicLayout><Sermons /></PublicLayout>} />
+        <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
+        <Route path="/ministries" element={<PublicLayout><Ministries /></PublicLayout>} />
       </Routes>
     </Router>
   );
