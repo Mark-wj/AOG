@@ -5,7 +5,7 @@ const MeetOurPastor = () => {
   const pastor = {
     name: "Pastor Gary Morgan",
     title: "Senior Pastor & Founder",
-    image: "/public/assets/12422-removebg-preview.png",
+    image: "/public/12422-removebg-preview.png",
     quote: "Arming People With The Word Of God, And The Gospel Of Jesus Christ In These Endtimes Because Jesus Christ Is Soon To Come.",
     bio: "Pastor Gary Morgan has been faithfully serving the Lord for over 20 years. His passion for evangelism and deep understanding of God's Word has transformed countless lives. With a heart for the lost and a vision for end-times ministry, Pastor Gary leads our congregation with wisdom, compassion, and unwavering faith.",
     credentials: [

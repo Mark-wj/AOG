@@ -43,18 +43,25 @@ const Navbar = () => {
         <div className="flex justify-between items-center py-4">
           {/* Logo with Cross Icon */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <motion.div 
-              className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ duration: 0.3 }}
+            <motion.div
+              className="relative"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
             >
-              <span className="text-2xl">✝️</span>
+              <div className="w-12 h-12 lg:w-14 lg:h-14 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full blur-xl opacity-50 animate-pulse"></div>
+                <div className="relative w-full h-full bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 rounded-full flex items-center justify-center shadow-2xl shadow-amber-500/50 border-4 border-white/20">
+                  <span className="text-2xl lg:text-3xl font-display text-midnight-950">✝</span>
+                </div>
+              </div>
             </motion.div>
+            
             <div className="hidden lg:block">
-              <div className="font-display text-xl font-bold">
+              <div className="font-display text-lg xl:text-xl font-bold">
                 <span className="text-gold-soft">Armor of God</span>
               </div>
-              <div className="font-accent text-sm text-gray-300 italic">
+              <div className="font-accent text-xs xl:text-sm text-gray-300 italic">
                 Evangelical Worldwide Ministry
               </div>
             </div>
@@ -85,7 +92,10 @@ const Navbar = () => {
                 to="/admin"
                 className="ml-4 px-5 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-lg transition-all duration-300 font-display text-sm flex items-center space-x-2 shadow-lg hover:shadow-purple-500/50"
               >
-                <span>⚙️</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
                 <span>Admin</span>
               </Link>
             </div>
@@ -97,7 +107,10 @@ const Navbar = () => {
               to="/admin"
               className="px-3 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg text-sm"
             >
-              <span>⚙️</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -140,19 +153,6 @@ const Navbar = () => {
                       </Link>
                     </motion.div>
                   ))}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: navigation.length * 0.05 }}
-                  >
-                    <Link
-                      to="/admin"
-                      className="block px-4 py-3 mt-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-display text-center"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      ⚙️ Admin Panel
-                    </Link>
-                  </motion.div>
                 </div>
               </div>
             </motion.div>

@@ -1,62 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CalendarIcon, ClockIcon, MapPinIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import Section from '../components/Section';
 import Card from '../components/Card';
+import { eventsAPI } from '../services/api';
 
 const Events = () => {
   const [filter, setFilter] = useState('upcoming');
+  const [events, setEvents] = useState({ upcoming: [], past: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const events = {
-    upcoming: [
-      {
-        id: 1,
-        title: "Christmas Eve Candlelight Service",
-        date: "December 24, 2024",
-        time: "6:00 PM",
-        location: "Main Sanctuary",
-        image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        description: "Join us for a magical Christmas Eve service with candlelight, carols, and celebration of Christ's birth."
-      },
-      {
-        id: 2,
-        title: "New Year's Prayer Night",
-        date: "December 31, 2024",
-        time: "9:00 PM",
-        location: "Prayer Chapel",
-        image: "https://images.unsplash.com/photo-1530016555861-3d1f3f5ca94b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        description: "Welcome the new year in prayer and worship. Let's dedicate 2025 to God's purpose."
-      },
-      {
-        id: 3,
-        title: "Youth Revival Weekend",
-        date: "January 10-12, 2025",
-        time: "Friday 7:00 PM",
-        location: "Youth Center",
-        image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        description: "Three days of powerful worship, teaching, and fellowship for teens and young adults."
-      }
-    ],
-    past: [
-      {
-        id: 4,
-        title: "Fall Harvest Festival",
-        date: "October 31, 2024",
-        time: "4:00 PM",
-        location: "Church Grounds",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        description: "A wonderful community event with games, food, and fellowship for all ages."
-      },
-      {
-        id: 5,
-        title: "Back to School Blessing",
-        date: "August 15, 2024",
-        time: "10:30 AM",
-        location: "Main Sanctuary",
-        image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-        description: "Special service blessing students, teachers, and parents for the new school year."
-      }
-    ]
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Fetch all events
+      const allEvents = await eventsAPI.getAll();
+      
+      // Separate into upcoming and past
+      const upcoming = allEvents.filter(event => event.category === 'upcoming');
+      const past = allEvents.filter(event => event.category === 'past');
+      
+      setEvents({ upcoming, past });
+    } catch (err) {
+      console.error('Error fetching events:', err);
+      setError('Failed to load events. Please try again later.');
+      setEvents({ upcoming: [], past: [] });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -117,85 +95,125 @@ const Events = () => {
           </div>
         </div>
 
-        {/* Events Grid */}
-        <div className="grid lg:grid-cols-2 gap-8">
-          {events[filter].map((event, index) => (
-            <motion.div
-              key={event.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <Card className="hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 overflow-hidden group">
+        {/* Loading State */}
+        {loading && (
+          <div className="grid lg:grid-cols-2 gap-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-effect-strong rounded-2xl p-6 animate-pulse">
                 <div className="flex flex-col md:flex-row gap-6">
-                  {/* Event Image */}
-                  <div className="w-full md:w-48 h-48 flex-shrink-0 relative overflow-hidden rounded-xl">
-                    <img 
-                      src={event.image} 
-                      alt={event.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
-                  </div>
-                  
-                  {/* Event Details */}
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-white mb-4 font-display group-hover:text-amber-400 transition-colors">
-                      {event.title}
-                    </h3>
-                    
-                    <div className="space-y-3 mb-6">
-                      <div className="flex items-center text-amber-400">
-                        <CalendarIcon className="w-5 h-5 mr-3 flex-shrink-0" />
-                        <span className="font-semibold">{event.date}</span>
-                      </div>
-                      <div className="flex items-center text-gray-300">
-                        <ClockIcon className="w-5 h-5 mr-3 flex-shrink-0" />
-                        <span>{event.time}</span>
-                      </div>
-                      <div className="flex items-center text-gray-300">
-                        <MapPinIcon className="w-5 h-5 mr-3 flex-shrink-0" />
-                        <span>{event.location}</span>
-                      </div>
-                    </div>
-                    
-                    <p className="text-gray-300 mb-6 leading-relaxed">
-                      {event.description}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-3">
-                      <button className="btn-primary flex items-center space-x-2">
-                        <span>Learn More</span>
-                      </button>
-                      <button className="btn-secondary flex items-center space-x-2">
-                        <PlusCircleIcon className="w-5 h-5" />
-                        <span>Add to Calendar</span>
-                      </button>
-                    </div>
+                  <div className="w-full md:w-48 h-48 bg-white/10 rounded-xl"></div>
+                  <div className="flex-1 space-y-4">
+                    <div className="bg-white/10 h-6 rounded w-3/4"></div>
+                    <div className="bg-white/10 h-4 rounded w-1/2"></div>
+                    <div className="bg-white/10 h-4 rounded w-2/3"></div>
+                    <div className="bg-white/10 h-20 rounded"></div>
                   </div>
                 </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* No Events Message */}
-        {events[filter].length === 0 && (
-          <motion.div 
-            className="text-center py-20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-purple-600/20 to-amber-400/20 rounded-full flex items-center justify-center">
-              <CalendarIcon className="w-16 h-16 text-gray-400" />
+        {/* Error State */}
+        {error && !loading && (
+          <div className="text-center py-12">
+            <div className="w-32 h-32 mx-auto mb-6 bg-red-600/20 rounded-full flex items-center justify-center">
+              <svg className="w-16 h-16 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2 font-display">
-              No {filter} events
-            </h3>
-            <p className="text-gray-300">Check back later for upcoming events!</p>
-          </motion.div>
+            <h3 className="text-2xl font-bold text-white mb-2 font-display">{error}</h3>
+            <button 
+              onClick={fetchEvents}
+              className="btn-primary mt-4"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Events Grid */}
+        {!loading && !error && (
+          <>
+            {events[filter].length > 0 ? (
+              <div className="grid lg:grid-cols-2 gap-8">
+                {events[filter].map((event, index) => (
+                  <motion.div
+                    key={event._id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                    viewport={{ once: true }}
+                  >
+                    <Card className="hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 overflow-hidden group">
+                      <div className="flex flex-col md:flex-row gap-6">
+                        {/* Event Image */}
+                        <div className="w-full md:w-48 h-48 flex-shrink-0 relative overflow-hidden rounded-xl">
+                          <img 
+                            src={event.image} 
+                            alt={event.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
+                        </div>
+                        
+                        {/* Event Details */}
+                        <div className="flex-1">
+                          <h3 className="text-2xl font-bold text-white mb-4 font-display group-hover:text-amber-400 transition-colors">
+                            {event.title}
+                          </h3>
+                          
+                          <div className="space-y-3 mb-6">
+                            <div className="flex items-center text-amber-400">
+                              <CalendarIcon className="w-5 h-5 mr-3 flex-shrink-0" />
+                              <span className="font-semibold">{event.date}</span>
+                            </div>
+                            <div className="flex items-center text-gray-300">
+                              <ClockIcon className="w-5 h-5 mr-3 flex-shrink-0" />
+                              <span>{event.time}</span>
+                            </div>
+                            <div className="flex items-center text-gray-300">
+                              <MapPinIcon className="w-5 h-5 mr-3 flex-shrink-0" />
+                              <span>{event.location}</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-gray-300 mb-6 leading-relaxed line-clamp-2">
+                            {event.description}
+                          </p>
+                          
+                          <div className="flex flex-wrap gap-3">
+                            <button className="btn-primary flex items-center space-x-2">
+                              <span>Learn More</span>
+                            </button>
+                            <button className="btn-secondary flex items-center space-x-2">
+                              <PlusCircleIcon className="w-5 h-5" />
+                              <span>Add to Calendar</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <motion.div 
+                className="text-center py-20"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-purple-600/20 to-amber-400/20 rounded-full flex items-center justify-center">
+                  <CalendarIcon className="w-16 h-16 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2 font-display">
+                  No {filter} events
+                </h3>
+                <p className="text-gray-300">Check back later for upcoming events!</p>
+              </motion.div>
+            )}
+          </>
         )}
       </Section>
 

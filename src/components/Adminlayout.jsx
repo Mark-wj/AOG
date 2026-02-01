@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 import {
   HomeIcon,
   CalendarIcon,
@@ -26,6 +27,7 @@ const AdminLayout = () => {
     { name: 'Sermons', path: '/admin/sermons', icon: MicrophoneIcon },
     { name: 'Messages', path: '/admin/messages', icon: EnvelopeIcon },
     { name: 'Gallery', path: '/admin/gallery', icon: PhotoIcon },
+    { name: 'Settings', path: '/admin/settings', icon: Cog6ToothIcon },
   ];
 
   return (

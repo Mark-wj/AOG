@@ -1,58 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CalendarIcon, PlayIcon, UserGroupIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, PlayIcon } from '@heroicons/react/24/outline';
 import HeroSection from '../components/HeroSection';
 import Section from '../components/Section';
 import Card from '../components/Card';
 import MeetOurPastor from '../components/MeetOurPastor';
+import { eventsAPI, sermonsAPI } from '../services/api';
 
 const Home = () => {
-  const events = [
-    {
-      title: "Sunday Worship Service",
-      date: "Every Sunday, 10:00 AM",
-      image: "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      path: "/events"
-    },
-    {
-      title: "Youth Night",
-      date: "Friday, 7:00 PM",
-      image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      path: "/events"
-    }
-  ];
+  const [events, setEvents] = useState([]);
+  const [sermons, setSermons] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const sermons = [
-    {
-      title: "The Power of Faith",
-      speaker: "Pastor Gary Morgan",
-      date: "Nov 12, 2024",
-      image: "https://images.unsplash.com/photo-1501281667305-0d4ebd5b1e67?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      path: "/sermons"
-    },
-    {
-      title: "Walking in Grace",
-      speaker: "Pastor Gary Morgan",
-      date: "Nov 5, 2024",
-      image: "https://images.unsplash.com/photo-1438032005730-c779502df39b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      path: "/sermons"
-    },
-    {
-      title: "Hope in Hard Times",
-      speaker: "Pastor Gary Morgan",
-      date: "Oct 29, 2024",
-      image: "https://images.unsplash.com/photo-1465847899084-d164dfdded4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      path: "/sermons"
-    },
-    {
-      title: "The Joy of Giving",
-      speaker: "Pastor Gary Morgan",
-      date: "Oct 22, 2024",
-      image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      path: "/sermons"
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch upcoming events
+      const eventsData = await eventsAPI.getAll('upcoming');
+      setEvents(eventsData.slice(0, 3)); // Get first 3 events
+      
+      // Fetch latest sermons
+      const sermonsData = await sermonsAPI.getAll();
+      setSermons(sermonsData.slice(0, 4)); // Get first 4 sermons
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      // Set empty arrays on error
+      setEvents([]);
+      setSermons([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const ministries = [
     {
@@ -177,57 +162,75 @@ const Home = () => {
         subtitle="Join us in fellowship and worship" 
         className="animated-gradient pattern-crosses"
       >
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="glass-effect-strong rounded-2xl p-6 animate-pulse">
+                <div className="bg-white/10 h-56 rounded-xl mb-4"></div>
+                <div className="bg-white/10 h-6 rounded mb-2"></div>
+                <div className="bg-white/10 h-4 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+        ) : events.length > 0 ? (
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.map((event, index) => (
+                <motion.div
+                  key={event._id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.6 }}
+                  viewport={{ once: true }}
+                >
+                  <Card hover={true} className="group relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="relative">
+                      <div className="relative overflow-hidden rounded-xl mb-4">
+                        <img 
+                          src={event.image} 
+                          alt={event.title}
+                          className="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2 font-display group-hover:text-amber-400 transition-colors">
+                        {event.title}
+                      </h3>
+                      <p className="text-amber-400 mb-4 font-semibold flex items-center">
+                        <CalendarIcon className="w-5 h-5 mr-2" />
+                        {event.date} at {event.time}
+                      </p>
+                      <Link to="/events">
+                        <button className="btn-outline w-full">
+                          Learn More
+                        </button>
+                      </Link>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div 
+              className="text-center mt-16"
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card hover={true} className="group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative">
-                  <div className="relative overflow-hidden rounded-xl mb-4">
-                    <img 
-                      src={event.image} 
-                      alt={event.title}
-                      className="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2 font-display group-hover:text-amber-400 transition-colors">
-                    {event.title}
-                  </h3>
-                  <p className="text-amber-400 mb-4 font-semibold flex items-center">
-                    <CalendarIcon className="w-5 h-5 mr-2" />
-                    {event.date}
-                  </p>
-                  <Link to={event.path}>
-                    <button className="btn-outline w-full">
-                      Learn More
-                    </button>
-                  </Link>
-                </div>
-              </Card>
+              <Link to="/events">
+                <button className="btn-primary text-lg px-10 py-5">
+                  View All Events
+                </button>
+              </Link>
             </motion.div>
-          ))}
-        </div>
-        
-        <motion.div 
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <Link to="/events">
-            <button className="btn-primary text-lg px-10 py-5">
-              View All Events
-            </button>
-          </Link>
-        </motion.div>
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-300 text-lg">No upcoming events at the moment. Check back soon!</p>
+          </div>
+        )}
       </Section>
 
       {/* Latest Sermons */}
@@ -236,61 +239,79 @@ const Home = () => {
         subtitle="Messages to inspire and guide your spiritual journey"
         className="bg-gradient-to-br from-royal-purple-900 via-midnight-900 to-royal-purple-950 pattern-crosses-ornate"
       >
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {sermons.map((sermon, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-effect-strong rounded-2xl p-6 animate-pulse">
+                <div className="bg-white/10 h-48 rounded-xl mb-4"></div>
+                <div className="bg-white/10 h-6 rounded mb-2"></div>
+                <div className="bg-white/10 h-4 rounded w-3/4 mb-2"></div>
+                <div className="bg-white/10 h-4 rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        ) : sermons.length > 0 ? (
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {sermons.map((sermon, index) => (
+                <motion.div
+                  key={sermon._id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <Card className="group h-full">
+                    <div className="relative overflow-hidden rounded-xl mb-4">
+                      <img 
+                        src={sermon.image}
+                        alt={sermon.title}
+                        className="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                          <PlayIcon className="w-8 h-8 text-gray-900 ml-1" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-white mb-3 font-display group-hover:text-amber-400 transition-colors">
+                      {sermon.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm mb-2">{sermon.speaker}</p>
+                    <p className="text-amber-400 text-sm font-semibold mb-4">{sermon.date}</p>
+                    
+                    <Link to="/sermons" className="block">
+                      <button className="btn-outline w-full text-sm py-2">
+                        Watch Sermon
+                      </button>
+                    </Link>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div 
+              className="text-center mt-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card className="group h-full">
-                <div className="relative overflow-hidden rounded-xl mb-4">
-                  <img 
-                    src={sermon.image}
-                    alt={sermon.title}
-                    className="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  {/* Play button overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                      <PlayIcon className="w-8 h-8 text-gray-900 ml-1" />
-                    </div>
-                  </div>
-                </div>
-                
-                <h3 className="text-xl font-bold text-white mb-3 font-display group-hover:text-amber-400 transition-colors">
-                  {sermon.title}
-                </h3>
-                <p className="text-gray-300 text-sm mb-2">{sermon.speaker}</p>
-                <p className="text-amber-400 text-sm font-semibold mb-4">{sermon.date}</p>
-                
-                <Link to={sermon.path} className="block">
-                  <button className="btn-outline w-full text-sm py-2">
-                    Watch Sermon
-                  </button>
-                </Link>
-              </Card>
+              <Link to="/sermons">
+                <button className="btn-primary text-lg px-10 py-5">
+                  Browse All Sermons
+                </button>
+              </Link>
             </motion.div>
-          ))}
-        </div>
-        
-        <motion.div 
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <Link to="/sermons">
-            <button className="btn-primary text-lg px-10 py-5">
-              Browse All Sermons
-            </button>
-          </Link>
-        </motion.div>
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-300 text-lg">No sermons available at the moment. Check back soon!</p>
+          </div>
+        )}
       </Section>
 
       {/* Ministries Preview */}

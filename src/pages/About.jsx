@@ -1,5 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { 
+  BookOpenIcon, 
+  HeartIcon, 
+  UserGroupIcon,
+  SparklesIcon,
+  GlobeAltIcon,
+  CheckCircleIcon 
+} from '@heroicons/react/24/outline';
 import Section from '../components/Section';
 import Card from '../components/Card';
 
@@ -18,6 +26,39 @@ const About = () => {
       role: "Worship Director",
       image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       bio: "Bringing heavenly music to our worship services and leading praise teams."
+    }
+  ];
+
+  const beliefs = [
+    {
+      title: "The Holy Bible",
+      description: "We believe the Bible is the inspired, inerrant Word of God and our ultimate authority for faith and practice.",
+      icon: BookOpenIcon
+    },
+    {
+      title: "The Trinity",
+      description: "We believe in one God eternally existing in three persons: Father, Son, and Holy Spirit.",
+      icon: SparklesIcon
+    },
+    {
+      title: "Salvation",
+      description: "We believe salvation is by grace through faith in Jesus Christ alone, not by works.",
+      icon: HeartIcon
+    },
+    {
+      title: "The Church",
+      description: "We believe the Church is the body of Christ, called to worship God and make disciples.",
+      icon: UserGroupIcon
+    },
+    {
+      title: "Second Coming",
+      description: "We believe in the personal, visible return of Jesus Christ to establish His eternal kingdom.",
+      icon: GlobeAltIcon
+    },
+    {
+      title: "The Holy Spirit",
+      description: "We believe the Holy Spirit empowers believers for holy living and effective service.",
+      icon: SparklesIcon
     }
   ];
 
@@ -45,12 +86,12 @@ const About = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="inline-block px-6 py-2 bg-amber-400/20 rounded-full mb-6 border border-amber-400/30">
-              <span className="text-amber-400 text-sm font-semibold tracking-wide uppercase">
+              <span className="text-amber-400 text-sm font-semibold tracking-wide uppercase font-display">
                 Our Story
               </span>
             </div>
             <h1 className="heading-primary mb-6">About Our Church</h1>
-            <p className="text-xl text-gray-200 leading-relaxed">
+            <p className="text-xl text-gray-200 leading-relaxed font-accent">
               A journey of faith, hope, and love since our founding. Dedicated to arming people with the Word of God and the Gospel of Jesus Christ in these end times.
             </p>
             <div className="ornamental-divider w-64 mx-auto mt-8"></div>
@@ -64,28 +105,26 @@ const About = () => {
         subtitle="Called to serve, empowered to transform"
         className="bg-gradient-to-br from-midnight-950 via-royal-purple-900 to-midnight-900 pattern-crosses-ornate"
       >
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <div className="glass-effect-strong rounded-3xl p-10 border-divine">
+            <div className="glass-effect-strong rounded-3xl p-8 lg:p-10 border-divine">
               <div className="inline-flex items-center px-4 py-2 bg-amber-400/20 rounded-full mb-6">
-                <svg className="w-5 h-5 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span className="text-amber-400 text-sm font-semibold tracking-wide uppercase">
+                <SparklesIcon className="w-5 h-5 text-amber-400 mr-2" />
+                <span className="text-amber-400 text-sm font-semibold tracking-wide uppercase font-display">
                   Our Mission
                 </span>
               </div>
               
-              <h3 className="text-3xl font-bold text-white mb-6 font-display">
+              <h3 className="text-2xl lg:text-3xl font-bold text-white mb-6 font-display">
                 Arming Believers for Victory
               </h3>
               
-              <p className="text-gray-200 text-lg mb-6 leading-relaxed">
+              <p className="text-gray-200 text-base lg:text-lg mb-6 leading-relaxed font-accent">
                 To create a welcoming community where individuals can experience spiritual transformation through God's love and grace, equipped with the full armor of God.
               </p>
               
@@ -100,11 +139,9 @@ const About = () => {
                     viewport={{ once: true }}
                   >
                     <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-midnight-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <CheckCircleIcon className="w-5 h-5 text-midnight-950" />
                     </div>
-                    <span className="text-white font-semibold text-lg">{value}</span>
+                    <span className="text-white font-semibold text-base lg:text-lg font-display">{value}</span>
                   </motion.div>
                 ))}
               </div>
@@ -134,85 +171,33 @@ const About = () => {
         subtitle="Foundational truths that guide our faith"
         className="animated-gradient pattern-crosses"
       >
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[
-            {
-              title: "The Holy Bible",
-              description: "We believe the Bible is the inspired, inerrant Word of God and our ultimate authority for faith and practice.",
-              icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              )
-            },
-            {
-              title: "The Trinity",
-              description: "We believe in one God eternally existing in three persons: Father, Son, and Holy Spirit.",
-              icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              )
-            },
-            {
-              title: "Salvation",
-              description: "We believe salvation is by grace through faith in Jesus Christ alone, not by works.",
-              icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              )
-            },
-            {
-              title: "The Church",
-              description: "We believe the Church is the body of Christ, called to worship God and make disciples.",
-              icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              )
-            },
-            {
-              title: "Second Coming",
-              description: "We believe in the personal, visible return of Jesus Christ to establish His eternal kingdom.",
-              icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                </svg>
-              )
-            },
-            {
-              title: "The Holy Spirit",
-              description: "We believe the Holy Spirit empowers believers for holy living and effective service.",
-              icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                </svg>
-              )
-            }
-          ].map((belief, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full group hover:border-amber-400/30 transition-all duration-300">
-                <div className="flex flex-col h-full">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    {belief.icon}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {beliefs.map((belief, index) => {
+            const Icon = belief.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full group hover:border-amber-400/30 transition-all duration-300">
+                  <div className="flex flex-col h-full">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-4 font-display group-hover:text-amber-400 transition-colors">
+                      {belief.title}
+                    </h3>
+                    <p className="text-gray-300 leading-relaxed flex-grow font-accent">
+                      {belief.description}
+                    </p>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4 font-display group-hover:text-amber-400 transition-colors">
-                    {belief.title}
-                  </h3>
-                  <p className="text-gray-300 leading-relaxed flex-grow">
-                    {belief.description}
-                  </p>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       </Section>
 
@@ -222,7 +207,7 @@ const About = () => {
         subtitle="Dedicated servants called to shepherd God's flock"
         className="bg-gradient-to-br from-royal-purple-900 via-midnight-900 to-royal-purple-950 pattern-crosses-ornate"
       >
-        <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
           {leaders.map((leader, index) => (
             <motion.div
               key={index}
@@ -236,15 +221,15 @@ const About = () => {
                   <img 
                     src={leader.image}
                     alt={leader.name}
-                    className="w-full h-80 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-64 sm:h-80 object-cover transform group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-2xl font-bold text-white font-display">{leader.name}</h3>
-                    <p className="text-amber-400 font-semibold">{leader.role}</p>
+                    <h3 className="text-xl lg:text-2xl font-bold text-white font-display">{leader.name}</h3>
+                    <p className="text-amber-400 font-semibold font-display">{leader.role}</p>
                   </div>
                 </div>
-                <p className="text-gray-300 leading-relaxed">{leader.bio}</p>
+                <p className="text-gray-300 leading-relaxed font-accent">{leader.bio}</p>
               </Card>
             </motion.div>
           ))}
@@ -273,17 +258,17 @@ const About = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 font-display">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 font-display">
               Come As You Are
             </h2>
-            <p className="text-xl mb-8 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl mb-8 leading-relaxed max-w-2xl mx-auto font-accent">
               You're invited to join our family. Experience the transforming power of God's love and the fellowship of believers walking together in faith.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-primary text-lg px-8 py-4">
+              <button className="btn-primary text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4">
                 Plan Your Visit
               </button>
-              <button className="btn-secondary text-lg px-8 py-4">
+              <button className="btn-secondary text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4">
                 Contact Us
               </button>
             </div>

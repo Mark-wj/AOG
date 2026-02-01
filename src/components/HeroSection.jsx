@@ -90,7 +90,7 @@ const HeroSection = () => {
       {/* Main Content */}
       <div className="relative z-20 text-center text-white max-w-6xl mx-auto px-4">
         {/* Church Logo/Emblem */}
-        <motion.div
+        {/* <motion.div
           className="mb-8"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -99,10 +99,10 @@ const HeroSection = () => {
           <div className="w-32 h-32 mx-auto relative">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full blur-2xl opacity-50 animate-pulse"></div>
             <div className="relative w-full h-full bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 rounded-full flex items-center justify-center shadow-2xl shadow-amber-500/50 border-4 border-white/20">
-              <span className="text-5xl">✝️</span>
+                   <div className="absolute bottom-10  text-6xl font-display pointer-events-none">✝</div>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Main Heading */}
         <motion.div
