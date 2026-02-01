@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LockClosedIcon, UserIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { authAPI } from '../api';  // Use the API wrapper
+import { authAPI } from '../../src/services/api';  // Use the API wrapper
 
 const AdminLogin = () => {
   const navigate = useNavigate();
