@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BackgroundMusic from './components/Backgroundmusic';
@@ -18,6 +18,7 @@ import AdminSermons from './components/Adminsermons';
 import AdminMessages from './components/Adminmessages';
 import AdminGallery from './components/Admingallery';
 import AdminSettings from './components/Adminsettings';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Public Layout Wrapper
 const PublicLayout = ({ children }) => (
@@ -37,11 +38,18 @@ function App() {
       <Routes>
         {/* ⚠️ IMPORTANT: Admin routes MUST come BEFORE public routes to prevent path matching issues */}
         
-        {/* Admin Login (No Layout) */}
+        {/* Admin Login (No Layout - Public Access) */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* Admin Routes with AdminLayout */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* Protected Admin Routes with AdminLayout */}
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="events" element={<AdminEvents />} />
@@ -59,6 +67,9 @@ function App() {
         <Route path="/sermons" element={<PublicLayout><Sermons /></PublicLayout>} />
         <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
         <Route path="/ministries" element={<PublicLayout><Ministries /></PublicLayout>} />
+
+        {/* Catch-all redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

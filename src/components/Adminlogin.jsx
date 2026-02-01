@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LockClosedIcon, UserIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { authAPI } from '../services/api';  // Fixed import path
+import { authAPI } from '../services/api';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -30,14 +30,14 @@ const AdminLogin = () => {
     try {
       const data = await authAPI.login(formData);
       
-      // Save token to localStorage
+      // Save BOTH token AND admin user data to localStorage
       localStorage.setItem('adminToken', data.token);
+      localStorage.setItem('adminUser', JSON.stringify(data.admin));
       
-      console.log('✅ Login successful, redirecting to /admin');
+      console.log('✅ Login successful, redirecting to admin dashboard...');
       
       // Redirect to admin dashboard
-      navigate('/admin');  // This will match the index route which renders AdminDashboard
-      
+      navigate('/admin');
     } catch (error) {
       console.error('❌ Login error:', error);
       setError(error.response?.data?.message || 'Invalid credentials. Please try again.');
