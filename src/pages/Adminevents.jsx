@@ -10,7 +10,7 @@ import {
   ClockIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline';
-import { eventsAPI } from '../api';  // Use the API wrapper
+import { eventsAPI } from '../services/api';  
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
