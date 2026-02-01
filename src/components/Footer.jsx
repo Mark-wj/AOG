@@ -158,7 +158,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-gold-soft/20 pt-8 text-center">
           <p className="text-gray-400 font-accent">
-            &copy; {new Date().getFullYear()} Armor of God Evangelical Worldwide Ministry. All rights reserved.
+            &copy; 2023 Armor of God Evangelical Worldwide Ministry. All rights reserved.
           </p>
           <p className="text-gray-500 text-sm mt-2 font-accent">
             Built with faith and dedication to spreading the Gospel

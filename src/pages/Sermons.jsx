@@ -41,6 +41,125 @@ const Sermons = () => {
     }
   };
 
+  const closeModal = () => {
+    setSelectedSermon(null);
+  };
+
+  // Extract YouTube video ID from URL
+  const getYouTubeVideoId = (url) => {
+    if (!url) return null;
+    
+    // Handle different YouTube URL formats
+    const patterns = [
+      /youtube\.com\/watch\?v=([^&]+)/,
+      /youtube\.com\/embed\/([^?]+)/,
+      /youtu\.be\/([^?]+)/,
+      /youtube\.com\/v\/([^?]+)/
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) return match[1];
+    }
+    
+    return null;
+  };
+
+  // Extract Vimeo video ID from URL
+  const getVimeoVideoId = (url) => {
+    if (!url) return null;
+    const match = url.match(/vimeo\.com\/(\d+)/);
+    return match ? match[1] : null;
+  };
+
+  // Render video player based on URL type
+  const renderVideoPlayer = (sermon) => {
+    if (!sermon.videoUrl) {
+      return (
+        <div className="aspect-video bg-gray-900 rounded-2xl flex items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 pattern-crosses opacity-10"></div>
+          <div className="relative z-10 text-center text-white">
+            <div className="w-24 h-24 bg-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
+              <PlayIcon className="w-12 h-12 text-midnight-950 ml-1" />
+            </div>
+            <p className="text-lg">No video available</p>
+            <p className="text-sm text-gray-400 mt-2">Audio or transcript may be available</p>
+          </div>
+        </div>
+      );
+    }
+
+    const youtubeId = getYouTubeVideoId(sermon.videoUrl);
+    const vimeoId = getVimeoVideoId(sermon.videoUrl);
+
+    // YouTube Player
+    if (youtubeId) {
+      return (
+        <div className="aspect-video bg-black rounded-2xl overflow-hidden">
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`}
+            title={sermon.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          />
+        </div>
+      );
+    }
+
+    // Vimeo Player
+    if (vimeoId) {
+      return (
+        <div className="aspect-video bg-black rounded-2xl overflow-hidden">
+          <iframe
+            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1`}
+            title={sermon.title}
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          />
+        </div>
+      );
+    }
+
+    // Generic video URL (MP4, etc.)
+    if (sermon.videoUrl.includes('.mp4') || sermon.videoUrl.includes('.webm')) {
+      return (
+        <div className="aspect-video bg-black rounded-2xl overflow-hidden">
+          <video
+            src={sermon.videoUrl}
+            controls
+            autoPlay
+            className="w-full h-full"
+          >
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      );
+    }
+
+    // Fallback for unknown video formats
+    return (
+      <div className="aspect-video bg-gray-900 rounded-2xl flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 pattern-crosses opacity-10"></div>
+        <div className="relative z-10 text-center text-white">
+          <div className="w-24 h-24 bg-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <PlayIcon className="w-12 h-12 text-midnight-950 ml-1" />
+          </div>
+          <p className="text-lg">Unsupported video format</p>
+          <a 
+            href={sermon.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-400 hover:text-amber-300 underline mt-2 inline-block"
+          >
+            Watch on external site
+          </a>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div>
       {/* Hero Section */}
@@ -141,6 +260,10 @@ const Sermons = () => {
                     
                     <button 
                       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-amber-400 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-2xl"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSermonClick(sermons[0]);
+                      }}
                     >
                       <PlayIcon className="w-10 h-10 text-midnight-950 ml-1" />
                     </button>
@@ -176,7 +299,13 @@ const Sermons = () => {
                       </div>
                     </div>
                     
-                    <button className="btn-primary w-full lg:w-auto">
+                    <button 
+                      className="btn-primary w-full lg:w-auto"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSermonClick(sermons[0]);
+                      }}
+                    >
                       Watch Now
                     </button>
                   </div>
@@ -247,7 +376,13 @@ const Sermons = () => {
                           </div>
                         </div>
                         
-                        <button className="btn-outline w-full text-sm py-2">
+                        <button 
+                          className="btn-outline w-full text-sm py-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSermonClick(sermon);
+                          }}
+                        >
                           Watch Sermon
                         </button>
                       </Card>
@@ -279,7 +414,7 @@ const Sermons = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setSelectedSermon(null)}
+            onClick={closeModal}
           >
             <motion.div
               className="glass-effect-strong rounded-3xl p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-white/20"
@@ -299,25 +434,32 @@ const Sermons = () => {
                 </div>
                 <button 
                   className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors duration-300"
-                  onClick={() => setSelectedSermon(null)}
+                  onClick={closeModal}
                 >
                   <XMarkIcon className="w-6 h-6 text-white" />
                 </button>
               </div>
 
               {/* Video Player */}
-              <div className="aspect-video bg-gray-900 rounded-2xl flex items-center justify-center mb-6 relative overflow-hidden">
-                <div className="absolute inset-0 pattern-crosses opacity-10"></div>
-                <div className="relative z-10 text-center text-white">
-                  <div className="w-24 h-24 bg-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <PlayIcon className="w-12 h-12 text-midnight-950 ml-1" />
-                  </div>
-                  <p className="text-lg">Video player would be embedded here</p>
-                  {selectedSermon.videoUrl && (
-                    <p className="text-sm text-gray-400 mt-2">{selectedSermon.videoUrl}</p>
-                  )}
-                </div>
+              <div className="mb-6">
+                {renderVideoPlayer(selectedSermon)}
               </div>
+
+              {/* Audio Player (if available) */}
+              {selectedSermon.audioUrl && (
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-white mb-3 font-display flex items-center">
+                    <svg className="w-5 h-5 mr-2 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                    Audio Only
+                  </h4>
+                  <audio controls className="w-full rounded-xl bg-white/5 p-2">
+                    <source src={selectedSermon.audioUrl} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
 
               {/* Sermon Details */}
               <div className="space-y-4">
