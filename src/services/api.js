@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-// Remove trailing slash if present to prevent double slashes
+// Get the API URL from environment variable
+// For Railway, this will be something like: https://your-app.up.railway.app
 const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+
+console.log('🔗 API Base URL:', BASE_URL);
 
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30 second timeout
 });
 
 // Request interceptor - add auth token
@@ -17,23 +21,47 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Log request for debugging
+    console.log(`📤 ${config.method.toUpperCase()} ${config.url}`);
+    
     return config;
   },
   (error) => {
+    console.error('❌ Request error:', error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor - handle 401 errors
+// Response interceptor - handle errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Log successful response
+    console.log(`✅ ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status}`);
+    return response;
+  },
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('adminToken');
-      if (window.location.pathname.startsWith('/admin')) {
-        window.location.href = '/admin/login';
+    // Enhanced error logging
+    if (error.response) {
+      // Server responded with error
+      console.error(`❌ Server Error ${error.response.status}:`, error.response.data);
+      
+      // Handle 401 Unauthorized
+      if (error.response.status === 401) {
+        localStorage.removeItem('adminToken');
+        if (window.location.pathname.startsWith('/admin') && !window.location.pathname.includes('/login')) {
+          window.location.href = '/admin/login';
+        }
       }
+    } else if (error.request) {
+      // Request made but no response received (network error)
+      console.error('❌ Network Error - No response received:', error.message);
+      console.error('Check if backend is running at:', BASE_URL);
+    } else {
+      // Something else happened
+      console.error('❌ Error:', error.message);
     }
+    
     return Promise.reject(error);
   }
 );
