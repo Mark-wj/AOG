@@ -21,21 +21,34 @@ const AdminMessages = () => {
   }, []);
 
   const fetchMessages = async () => {
-    try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://aog-backend-production.up.railway.app/api/messages', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      setMessages(data);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    } finally {
-      setLoading(false);
+  try {
+    const token = localStorage.getItem('adminToken');
+    const response = await fetch('https://aog-backend-production.up.railway.app/api/messages', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    // Check if response is ok before parsing
+    if (!response.ok) {
+      if (response.status === 401) {
+        console.error('Unauthorized: Please check your admin token');
+        // Optionally redirect to login
+        // window.location.href = '/admin/login';
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+    
+    const data = await response.json();
+    // Ensure data is an array
+    setMessages(Array.isArray(data) ? data : []);
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    setMessages([]); // Set empty array on error to prevent filter issues
+  } finally {
+    setLoading(false);
+  }
+};
 
   const updateMessageStatus = async (messageId, status) => {
     try {

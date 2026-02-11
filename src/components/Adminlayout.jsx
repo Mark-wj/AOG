@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline';
@@ -14,6 +14,23 @@ import {
 const AdminLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Generate stable random values ONCE using useMemo to prevent flickering
+  const backgroundElements = useMemo(() => {
+    return [...Array(6)].map((_, i) => ({
+      id: `bg-element-${i}`,
+      width: Math.random() * 150 + 100,
+      height: Math.random() * 150 + 100,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      background: i % 2 === 0 
+        ? 'radial-gradient(circle, rgba(244, 208, 63, 0.08), transparent)' 
+        : 'radial-gradient(circle, rgba(139, 92, 246, 0.08), transparent)',
+      yMotion: [0, -(Math.random() * 40 + 20), 0],
+      xMotion: [0, Math.random() * 40 - 20, 0],
+      duration: Math.random() * 8 + 6,
+    }));
+  }, []); // Empty dependency array = only runs ONCE on mount
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -34,28 +51,26 @@ const AdminLayout = () => {
     <div className="min-h-screen bg-gradient-to-br from-midnight-950 via-royal-purple-900 to-midnight-900 pattern-crosses-animated">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
+        {backgroundElements.map((element) => (
           <motion.div
-            key={i}
+            key={element.id}
             className="absolute rounded-full"
             style={{
-              width: Math.random() * 150 + 100,
-              height: Math.random() * 150 + 100,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: i % 2 === 0 
-                ? 'radial-gradient(circle, rgba(244, 208, 63, 0.08), transparent)' 
-                : 'radial-gradient(circle, rgba(139, 92, 246, 0.08), transparent)',
+              width: element.width,
+              height: element.height,
+              left: element.left,
+              top: element.top,
+              background: element.background,
               filter: 'blur(60px)',
+              opacity: 0.4, // Fixed opacity instead of animated
             }}
             animate={{
-              y: [0, -40, 0],
-              x: [0, Math.random() * 40 - 20, 0],
+              y: element.yMotion,
+              x: element.xMotion,
               scale: [1, 1.2, 1],
-              opacity: [0.3, 0.6, 0.3],
             }}
             transition={{
-              duration: Math.random() * 8 + 6,
+              duration: element.duration,
               repeat: Infinity,
               ease: "easeInOut",
             }}

@@ -25,7 +25,7 @@ const AdminSettings = () => {
   const fetchSettings = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://aog-backend-production.up.railway.app/api'}/settings`, {
+      const response = await fetch('https://aog-backend-production.up.railway.app/api/settings', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -90,7 +90,14 @@ const AdminSettings = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://aog-backend-production.up.railway.app/api'}/settings`, {
+      
+      if (!token) {
+        setMessage({ type: 'error', text: 'Not authenticated. Please log in again.' });
+        setSaving(false);
+        return;
+      }
+
+      const response = await fetch('https://aog-backend-production.up.railway.app/api/settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -100,14 +107,20 @@ const AdminSettings = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
         setMessage({ type: 'success', text: 'Settings saved successfully!' });
         setTimeout(() => setMessage({ type: '', text: '' }), 3000);
       } else {
-        setMessage({ type: 'error', text: 'Failed to save settings' });
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error response:', response.status, errorData);
+        setMessage({ 
+          type: 'error', 
+          text: errorData.message || `Failed to save settings (${response.status})` 
+        });
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      setMessage({ type: 'error', text: 'Error saving settings' });
+      setMessage({ type: 'error', text: 'Network error. Please check your connection.' });
     } finally {
       setSaving(false);
     }

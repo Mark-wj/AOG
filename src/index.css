@@ -199,17 +199,12 @@ body {
   background-size: 60px 60px;
 }
 
-/* Animated Cross Pattern */
-@keyframes crossGlow {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
-}
-
+/* Animated Cross Pattern - FIXED: Removed opacity animation to stop flickering */
 .pattern-crosses-animated {
   background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(244, 208, 63, 0.05) 48px, rgba(244, 208, 63, 0.05) 52px),
-    repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(244, 208, 63, 0.05) 48px, rgba(244, 208, 63, 0.05) 52px);
-  animation: crossGlow 4s ease-in-out infinite;
+    repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(244, 208, 63, 0.04) 48px, rgba(244, 208, 63, 0.04) 52px),
+    repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(244, 208, 63, 0.04) 48px, rgba(244, 208, 63, 0.04) 52px);
+  /* Removed animation that caused flickering */
 }
 
 /* ==================== GRADIENT BACKGROUNDS ==================== */
